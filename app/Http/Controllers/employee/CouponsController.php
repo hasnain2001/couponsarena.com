@@ -110,7 +110,7 @@ public function update(Request $request)
             // 'status' => 'required|in:active,inactive',
             'authentication' => 'nullable|array',
             'authentication.*' => 'string',
-            'store' => 'nullable|string|max:255',
+            'store_id' => 'nullable|integer',
         'top_coupons' => 'nullable|integer|min:0',
 
 
@@ -126,11 +126,11 @@ public function update(Request $request)
             'ending_date' => $request->ending_date,
             'status' => $request->status,
             'authentication' => isset($request->authentication) ? json_encode($request->authentication) : "No Auth",
-            'store' => $request->store ,
+            'store_id' => $request->store_id,
             'top_coupons' => $request->top_coupons,
         ]);
 
-        return redirect()->back()->withInput()->with('success', 'Coupon Created Successfully');
+       return redirect()->back()->withInput()->with(['success' => 'Coupon created Successfully!', 'show_modal' => true]);
     }
 
 
@@ -168,12 +168,11 @@ public function update(Request $request)
             'ending_date' => $request->ending_date,
             'status' => $request->status,
             'authentication' => isset($request->authentication) ? json_encode($request->authentication) : "No Auth",
-            'store' => $request->input('store', $coupons->store), // Retain previous value if not provided
+            'store_id' => $request->input('store_id', $coupons->store_id), // Retain previous value if not provided
             'top_coupons' => $request->top_coupons,
         ]);
 
-        $store = Stores::where('slug', $coupons->store)->first();
-
+        $store = Stores::where('id', $coupons->store_id)->first();
         if ($store) {
             $url = route('employee.store_details', ['slug' => Str::slug($store->slug)]);
             return redirect($url)->with('success', 'Coupon Updated Successfully');

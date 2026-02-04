@@ -5,34 +5,35 @@ use App\Http\Controllers\Employee\CouponsController;
 use App\Http\Controllers\Employee\NetworksController;
 use App\Http\Controllers\Employee\CategoriesController;
 use App\Http\Controllers\Employee\EmployeeController;
+use App\Http\Controllers\Employee\SearchController;
 use App\Http\Middleware\RoleMiddleware;
-use App\Http\Middleware\EmployeeMiddleware;
 use Illuminate\Support\Facades\Route;
 Route::middleware([RoleMiddleware::class])->group(function () {
+    
     Route::prefix('employee')->name('employee.')->group(function () {
         Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('dashboard');
         });
      // Employee Routes Begin
-      Route::controller(BlogController::class)->prefix('employee')->group(function () {
-          Route::get('/Blog',  'blogs_show')->name('employee.blog.show');
-          Route::get('/blog/create',  'create')->name('employee.blog.create');
-          Route::post('/blog/store', 'store')->name('employee.blog.store');
-          Route::get('/blog/{id}/edit', 'edit')->name('employee.blog.edit');
-          Route::post('/employee/Blog/update/{id}', 'update')->name('employee.Blog.update');
-          Route::delete('/employee/Blog/{id}', [BlogController::class, 'destroy'])->name('employee.blog.delete');
-          Route::post('/blog/deleteSelected', [BlogController::class, 'deleteSelected'])->name('employee.blog.deleteSelected');
-          Route::delete('/blog/bulk-delete', [BlogController::class, 'deleteSelected'])->name('employee.blog.bulkDelete');
+      Route::controller(BlogController::class)->prefix('employee')->name('employee.blog.')->group(function () {
+          Route::get('/blog',  'index')->name('index');
+          Route::get('/blog/create',  'create')->name('create');
+          Route::post('/blog/store', 'store')->name('store');
+          Route::get('/blog/{id}/edit', 'edit')->name('edit');
+          Route::post('/blog/update/{id}', 'update')->name('update');
+          Route::delete('/blog/{id}', 'destroy')->name('delete');
+          Route::post('/blog/deleteSelected', 'deleteSelected')->name('deleteSelected');
+          Route::delete('/blog/bulk-delete', 'deleteSelected')->name('bulkDelete');
       });
 
       // Stores Routes Begin
-      Route::controller(StoresController::class)->prefix('employee')->name('employee.')->group(function () {
-          Route::get('/store', 'store')->name('stores');
-          Route::get('/Store/Create', 'create_store')->name('store.create');
-          Route::post('/store/stores', 'store_store')->name('store.store');
-          Route::get('/store/edit/{id}', 'edit_store')->name('store.edit');
-          Route::post('/store/update/{id}', 'update_store')->name('store.update');
-          Route::get('/store/delete/{id}', 'delete_store')->name('store.delete');
-          Route::post('/store/deleteSelected', 'deleteSelected')->name('store.deleteSelected');
+      Route::controller(StoresController::class)->prefix('employee')->name('employee.store.')->group(function () {
+          Route::get('/store', 'store')->name('index');
+          Route::get('/Store/Create', 'create_store')->name('create');
+          Route::post('/store/stores', 'store_store')->name('store');
+          Route::get('/store/edit/{id}', 'edit_store')->name('edit');
+          Route::post('/store/update/{id}', 'update_store')->name('update');
+          Route::get('/store/delete/{id}', 'delete_store')->name('delete');
+          Route::post('/store/deleteSelected', 'deleteSelected')->name('deleteSelected');
           Route::get('/stores/{slug}', 'StoreDetails')->name('store_details');
           Route::post('/check-slug', 'checkSlug')->name('check.slug');
 
@@ -40,39 +41,43 @@ Route::middleware([RoleMiddleware::class])->group(function () {
 
 
       // Categories Routes Begin
-      Route::controller(CategoriesController::class)->prefix('employee')->name('employee.')->group(function () {
-          Route::get('/category', 'category')->name('category');
-          Route::get('/category/create', 'create_category')->name('category.create');
-          Route::post('/category/store', 'store_category')->name('category.store');
-          Route::get('/category/edit/{id}', 'edit_category')->name('category.edit');
-          Route::post('/category/update/{id}', 'update_category')->name('category.update');
-          Route::get('/category/delete/{id}', 'delete_category')->name('category.delete');
-           Route::post('/category/deleteSelected', 'deleteSelected')->name('category.deleteSelected');
+      Route::controller(CategoriesController::class)->prefix('employee')->name('employee.category.')->group(function () {
+          Route::get('/category', 'category')->name('index');
+          Route::get('/category/create', 'create_category')->name('create');
+          Route::post('/category/store', 'store_category')->name('store');
+          Route::get('/category/edit/{id}', 'edit_category')->name('edit');
+          Route::post('/category/update/{id}', 'update_category')->name('update');
+          Route::get('/category/delete/{id}', 'delete_category')->name('delete');
+           Route::post('/category/deleteSelected', 'deleteSelected')->name('deleteSelected');
       });
 
 
       // Networks Routes Begin
-      Route::controller(NetworksController::class)->prefix('employee')->group(function () {
-          Route::get('/network', 'network')->name('employee.network');
-          Route::get('/network/create', 'create_network')->name('employee.network.create');
-          Route::post('/network/store', 'store_network')->name('employee.network.store');
-          Route::get('/network/edit/{id}', 'edit_network')->name('employee.network.edit');
-          Route::post('/network/update/{id}', 'update_network')->name('employee.network.update');
-          Route::get('/network/delete/{id}', 'delete_network')->name('employee.network.delete');
+      Route::controller(NetworksController::class)->prefix('employee')->name('employee.network.')->group(function () {
+          Route::get('/network', 'network')->name('index');
+          Route::get('/network/create', 'create_network')->name('create');
+          Route::post('/network/store', 'store_network')->name('store');
+          Route::get('/network/edit/{id}', 'edit_network')->name('edit');
+          Route::post('/network/update/{id}', 'update_network')->name('update');
+          Route::get('/network/delete/{id}', 'delete_network')->name('delete');
       });
-
-      // Coupons Routes Begin
-
-
-      Route::controller(CouponsController::class)->prefix('employee')->group(function () {
-          Route::get('/coupon', 'coupon')->name('employee.coupon');
-          Route::get('/coupon/create', 'create_coupon')->name('employee.coupon.create');
-          Route::get('/coupon/create/code', 'create_coupon_code')->name('employee.coupon.code');
-          Route::post('/coupon/store', 'store_coupon')->name('employee.coupon.store');
-          Route::get('/coupon/edit/{id}', 'edit_coupon')->name('employee.coupon.edit');
-          Route::post('/coupon/update/{id}', 'update_coupon')->name('employee.coupon.update');
-          Route::get('/coupon/delete/{id}', 'delete_coupon')->name('employee.coupon.delete');
-          Route::post('/custom-sortable', 'update')->name('employee.custom-sortable');
-      Route::post('/coupon/deleteSelected', 'deleteSelected')->name('employee.coupon.deleteSelected');
+   // Networks Routes Begin
+      Route::controller(CouponsController::class)->prefix('employee')->name('employee.coupon.')->group(function () {
+          Route::get('/coupon', 'coupon')->name('index');
+          Route::get('/coupon/create', 'create_coupon')->name('create');
+          Route::get('/coupon/create/code', 'create_coupon_code')->name('code');
+          Route::post('/coupon/store', 'store_coupon')->name('store');
+          Route::get('/coupon/edit/{id}', 'edit_coupon')->name('edit');
+          Route::post('/coupon/update/{id}', 'update_coupon')->name('update');
+          Route::get('/coupon/delete/{id}', 'delete_coupon')->name('delete');
+          Route::post('/custom-sortable', 'update')->name('custom-sortable');
+      Route::post('/coupon/deleteSelected', 'deleteSelected')->name('deleteSelected');
   });
+    Route::controller(SearchController::class)->prefix('employee')->name('employee.')->group(function () {
+        Route::get('/search', 'search')->name('search');
+        Route::get('/search_results', 'searchResults')->name('search_results');
+        Route::get('/quick-search', 'searchResults')->name('search.quick-results');
+        Route::get('/search-suggestions', 'searchSuggestions')->name('search_suggestions');
+        Route::get('/quick-search', 'quickSearch')->name('quick_search');
+    });
   });

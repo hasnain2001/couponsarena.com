@@ -105,7 +105,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-link"></i></span>
                                             </div>
-                                            <input type="affliliate_url" class="form-control" name="affliliate_url" id="affliliate_url" value="{{ old('affliliate_url') }}" placeholder="https://example.com" required>
+                                            <input type="affiliate_url" class="form-control" name="affiliate_url" id="affiliate_url" value="{{ old('affiliate_url') }}" placeholder="https://example.com" required>
                                         </div>
                                     </div>
                                 </div>
@@ -342,7 +342,7 @@
 
         function checkSlugExistence(urlSlug) {
             $.ajax({
-                url: '{{ route('admin.check.slug') }}',
+                url: '{{ route('admin.store.check.slug') }}',
                 method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -382,3 +382,4 @@
         });
     </script>
 @endsection
+    

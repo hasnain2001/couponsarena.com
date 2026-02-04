@@ -627,9 +627,6 @@
     <loc>http://localhost:8000/de/store/mustang-de</loc>
             </url>
     <url>
-    <loc>http://localhost:8000/store/yoto-uk</loc>
-            </url>
-    <url>
     <loc>http://localhost:8000/de/store/leitermann-de</loc>
             </url>
     <url>
@@ -1221,7 +1218,7 @@
     <loc>http://localhost:8000/es/store/tripcom-es</loc>
             </url>
     <url>
-    <loc>http://localhost:8000/store/tripcom-us</loc>
+    <loc>http://localhost:8000/store/tripcom-ww</loc>
             </url>
     <url>
     <loc>http://localhost:8000/store/bershka-us</loc>
@@ -2373,7 +2370,7 @@
     <loc>http://localhost:8000/store/z-gallerie-us</loc>
             </url>
     <url>
-    <loc>http://localhost:8000/store/wisdom-panel-us</loc>
+    <loc>http://localhost:8000/store/wisdom-panel-uk</loc>
             </url>
     <url>
     <loc>http://localhost:8000/store/weird-fish-uk</loc>
@@ -2418,7 +2415,7 @@
     <loc>http://localhost:8000/de/store/bottles-de</loc>
             </url>
     <url>
-    <loc>http://localhost:8000/de/store/dalfilo-de</loc>
+    <loc>http://localhost:8000/de/store/dalfilo</loc>
             </url>
     <url>
     <loc>http://localhost:8000/de/store/fensterversand-de</loc>
@@ -2440,9 +2437,6 @@
             </url>
     <url>
     <loc>http://localhost:8000/store/wholesale-marine-us</loc>
-            </url>
-    <url>
-    <loc>http://localhost:8000/store/yoto-us</loc>
             </url>
     <url>
     <loc>http://localhost:8000/it/store/estay-on-it</loc>
@@ -2631,7 +2625,166 @@
     <loc>http://localhost:8000/fr/store/sport-decouverte-fr</loc>
             </url>
     <url>
-    <loc>http://localhost:8000/it/store/hasnain-ali-khan</loc>
+    <loc>http://localhost:8000/store/hat-club-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/de/store/gstar-raw-de</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/nl/store/street-one-nl</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/maje-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/marks-spencer-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/danielle-guizio-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/fr/store/sihoo-fr</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/modern-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/rapsodo-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/nexbelt-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/korres-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/click-grow-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/step-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/rokform-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/canvas-on-demand-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/state-line-tack-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/tata-harper-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/shapellx-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/powerstep-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/aroma-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/ace-hardware-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/oral-b-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/title-nine-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/kicks-crew-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/de/store/luft-bude</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/lenox-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/nisolo-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/jmclaughlin-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/spencers-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/dungarees-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/bambu-lab-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/getyourguide-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/old-world-christmas-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/barefootdreams-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/jane-win-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/assouline-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/pooky-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/pacha-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/es/store/flex-es</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/de/store/lizensio-de</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/fr/store/beauty-bay-fr</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/skullcandy-uk</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/missoma-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/huega-house-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/kidrobot-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/nba-store-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/sandro-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/xp-pen-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/molton-brown-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/white-warren-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/dartagnan-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/ghostek-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/store/lime-lou-us</loc>
+            </url>
+    <url>
+    <loc>http://localhost:8000/de/store/klarmobil-de</loc>
             </url>
     <url>
     <loc>http://localhost:8000/blog/the-powerof-viator-exploring-the-world-one-experience-ata-time</loc>

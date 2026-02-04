@@ -248,6 +248,9 @@
                                                 'published' => ['class' => 'success', 'icon' => 'check-circle', 'text' => 'Published'],
                                                 'draft' => ['class' => 'warning', 'icon' => 'edit', 'text' => 'Draft'],
                                                 'archived' => ['class' => 'secondary', 'icon' => 'archive', 'text' => 'Archived'],
+                                                'enable' => ['class' => 'success', 'icon' => 'check-circle', 'text' => 'Published'],
+                                                'disabled' => ['class' => 'warning', 'icon' => 'edit', 'text' => 'Draft'],
+                                                'delete' => ['class' => 'danger', 'icon' => 'trash', 'text' => 'Deleted']
                                             ];
                                             $config = $statusConfig[$status] ?? $statusConfig['draft'];
                                         @endphp
@@ -272,9 +275,9 @@
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <a href="{{ route('admin.blog.show', $blog->id) }}"
-                                               class="btn btn-sm btn-outline-info border-end-0"
+                                               class="btn btn-sm btn-outline-dark border-end-0"
                                                data-bs-toggle="tooltip"
-                                               title="View Blog">
+                                               title="View Blog on admin panel">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <form action="{{ route('admin.blog.delete', $blog->id) }}"
@@ -285,10 +288,18 @@
                                                 <button type="submit"
                                                         class="btn btn-sm btn-outline-danger delete-btn"
                                                         data-bs-toggle="tooltip"
+                                                        onclick="return confirm('Are you sure you want to delete this blog?');"
                                                         title="Delete Blog">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            <a href="{{ route('blog-details', ['slug' => Str::slug($blog->slug)]) }}"
+                                               class="btn btn-sm btn-outline-info border-end-0"
+                                               data-bs-toggle="tooltip"
+                                               title="View Blog on Site"
+                                               target="_blank">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>

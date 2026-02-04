@@ -13,14 +13,14 @@ class BlogController extends Controller
 {
 
 
-    public function blogs_show() {
+    public function index() {
         $blogs = Blog::get();
-        return view('employee.Blog.show', compact('blogs'));
+        return view('employee.blog.index', compact('blogs'));
     }
 
 
     public function create() {
-        return view('employee.Blog.create');
+        return view('employee.blog.create');
     }
 
 
@@ -124,7 +124,7 @@ foreach ($images as $img) {
     public function edit($id)
     {
         $blog = Blog::findOrFail($id);
-        return view('employee.Blog.edit', compact('blog'));
+        return view('employee.blog.edit', compact('blog'));
     }
 
     public function update(Request $request, $id)
@@ -211,7 +211,7 @@ foreach ($images as $img) {
         $blog->save();
 
         // Redirect back with a success message
-        return redirect()->route('employee.blog.show')->with('success', 'Blog updated successfully.');
+        return redirect()->route('employee.blog.index')->with('success', 'Blog updated successfully.');
     }
 
 

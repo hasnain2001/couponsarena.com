@@ -14,19 +14,19 @@ use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
 {
-    public function category() {
+    public function index() {
         $categories = Categories::select('id', 'title', 'category_image', 'status', 'created_at','updated_at')
             ->orderBy('created_at', 'desc')
             ->get();
         return view('employee.categories.index', compact('categories'));
     }
-    
 
-    public function create_category() {
+
+    public function create() {
         return view('employee.categories.create');
     }
 
-    public function store_category(Request $request) {
+    public function store(Request $request) {
         // Validation
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',

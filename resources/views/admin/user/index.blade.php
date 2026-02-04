@@ -94,8 +94,8 @@
                     <div class="row align-items-center">
                         <div class="col">
                             <div class="text-xs fw-bold text-info text-uppercase mb-1">
-                                Editors</div>
-                            <div class="h5 mb-0 fw-bold text-gray-800">{{ $users->where('role', 'editor')->count() }}</div>
+                                employees</div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ $users->where('role', 'employee')->count() }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-user-edit fa-2x text-info"></i>
@@ -134,7 +134,7 @@
                         <select class="form-select form-select-sm" id="roleFilter">
                             <option value="">All Roles</option>
                             <option value="admin">Admin</option>
-                            <option value="editor">Editor</option>
+                            <option value="employee">employee</option>
                             <option value="user">User</option>
                         </select>
                     </div>
@@ -219,7 +219,7 @@
                                     @php
                                         $roleConfig = [
                                             'admin' => ['class' => 'danger', 'icon' => 'shield-alt', 'text' => 'Admin'],
-                                            'editor' => ['class' => 'warning', 'icon' => 'edit', 'text' => 'Editor'],
+                                            'employee' => ['class' => 'warning', 'icon' => 'edit', 'text' => 'employee'],
                                             'user' => ['class' => 'success', 'icon' => 'user', 'text' => 'User'],
                                         ];
                                         $config = $roleConfig[$user->role] ?? $roleConfig['user'];

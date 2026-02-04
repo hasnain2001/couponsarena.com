@@ -17,7 +17,7 @@ class Stores extends Model
         'slug',
         'top_store',
         'description',
-        'affliliate_url',
+        'affiliate_url',
         'destination_url',
         'top_store',
         'title',
@@ -35,14 +35,17 @@ class Stores extends Model
     {
         return $this->belongsTo(Categories::class, 'category_id');
     }
-
+     public function category()
+    {
+        return $this->belongsTo(Categories::class, 'category_id');
+    }
     public function language()
     {
         return $this->belongsTo(Language::class, 'language_id');
     }
     public function coupons()
     {
-        return $this->hasMany(Coupons::class);
+        return $this->hasMany(Coupons::class, 'store_id');
     }
     public function networks()
     {

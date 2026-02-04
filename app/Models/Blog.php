@@ -20,7 +20,7 @@ class Blog extends Model
         'top',
         'category_id',
         'language_id',
-
+        'status',
     ];
 
         public function language()

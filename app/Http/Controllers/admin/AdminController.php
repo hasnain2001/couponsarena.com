@@ -60,10 +60,10 @@ class AdminController extends Controller
             'activeNetworks' => $data['activeNetworks'],
 
             // Collections for recent items
-            'recentStores' => $data['recentStores'],
-            'recentCoupons' => $data['recentCoupons'],
-            'recentBlogs' => $data['recentBlogs'],
-            'recentUsers' => $data['recentUsers'],
+            'recentStores' => $data['recentStores']->orderBy('created_at', 'desc'),
+            'recentCoupons' => $data['recentCoupons']->orderBy('created_at', 'desc'),
+            'recentBlogs' => $data['recentBlogs']->orderBy('created_at', 'desc'),
+            'recentUsers' => $data['recentUsers']->orderBy('created_at', 'desc'),
 
             'period' => $period,
             'updated_at' => now()->format('H:i:s'),

@@ -17,7 +17,7 @@ class Localization
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $locale = $request->route('locale');
+        $locale = $request->route('lang');
         $availableLocales = Language::pluck('code')->toArray();
         if (in_array($locale, $availableLocales)) {
             App::setLocale($locale);

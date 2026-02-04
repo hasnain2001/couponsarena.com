@@ -1,764 +1,483 @@
 @extends('admin.layouts.master')
-
-@section('title', 'Create Blog')
+@section('title')
+    Create Blog
+@endsection
 
 @section('main-content')
-<div class="container-fluid">
-    <!-- Page Header -->
-    <div class="page-header d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-plus-circle text-primary me-2"></i>Create New Blog
-            </h1>
-            <p class="text-muted mb-0">Fill in the details to create a new blog post</p>
-        </div>
-        <div>
-            <a href="{{ route('admin.blog.index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>Back to Blogs
-            </a>
-        </div>
-    </div>
-
-    <!-- Main Form Card -->
-    <div class="row justify-content-center">
-        <div class="col-xl-10">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-3">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="icon-circle bg-primary bg-opacity-10 text-primary">
-                                <i class="fas fa-edit fs-4"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h5 class="mb-1">Blog Information</h5>
-                            <p class="text-muted small mb-0">Enter blog details below</p>
-                        </div>
-                    </div>
+<div class="content-wrapper">
+    <!-- Page header -->
+    <section class="content-header mb-4">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h1 class="h3 text-primary"><i class="fas fa-blog me-2"></i>Create New Blog Post</h1>
                 </div>
-
-                <div class="card-body">
-                    <!-- Success Message -->
-                    @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-check-circle me-3 fs-4"></i>
-                            <div>
-                                <h5 class="alert-heading mb-1">Success!</h5>
-                                <p class="mb-0">Blog created successfully.</p>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                    @endif
-
-                    <!-- Validation Errors -->
-                    @if($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-exclamation-circle me-3 fs-4"></i>
-                            <div>
-                                <h5 class="alert-heading mb-1">Validation Error(s)</h5>
-                                <ul class="mb-0 ps-3">
-                                    @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                    @endif
-
-                    <form method="POST" action="{{ route('admin.blog.store') }}" enctype="multipart/form-data" id="blogForm">
-                        @csrf
-
-                        <!-- Main Content Row -->
-                        <div class="row">
-                            <!-- Left Column - Main Content -->
-                            <div class="col-lg-8">
-                                <!-- Title & Slug -->
-                                <div class="card border-0 shadow-sm mb-4">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="fas fa-heading me-2"></i>Basic Information</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-8 mb-3">
-                                                <label for="title" class="form-label fw-medium">
-                                                    <i class="fas fa-pen me-1 text-primary"></i>Title <span class="text-danger">*</span>
-                                                </label>
-                                                <input type="text"
-                                                       class="form-control form-control-lg @error('title') is-invalid @enderror"
-                                                       name="title"
-                                                       id="title"
-                                                       value="{{ old('title') }}"
-                                                       required
-                                                       placeholder="Enter blog title">
-                                                @error('title')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
-                                            <div class="col-md-4 mb-3">
-                                                <label for="language_id" class="form-label fw-medium">
-                                                    <i class="fas fa-language me-1 text-primary"></i>Language <span class="text-danger">*</span>
-                                                </label>
-                                                <select name="language_id"
-                                                        id="language_id"
-                                                        class="form-select form-select-lg @error('language_id') is-invalid @enderror"
-                                                        required>
-                                                    <option value="" disabled {{ old('language_id') ? '' : 'selected' }}>Select Language</option>
-                                                    @foreach ($langs as $lang)
-                                                    <option value="{{ $lang->id }}" {{ old('language_id') == $lang->id ? 'selected' : '' }}>
-                                                        {{ strtoupper($lang->code) }} - {{ $lang->name ?? $lang->code }}
-                                                    </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('language_id')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
-                                            <div class="col-12 mb-3">
-                                                <label for="slug" class="form-label fw-medium">
-                                                    <i class="fas fa-link me-1 text-primary"></i>Slug / URL <span class="text-danger">*</span>
-                                                </label>
-                                                <div class="input-group input-group-lg">
-                                                    <span class="input-group-text bg-light">/blog/</span>
-                                                    <input type="text"
-                                                           class="form-control @error('slug') is-invalid @enderror"
-                                                           name="slug"
-                                                           id="slug"
-                                                           value="{{ old('slug') }}"
-                                                           required
-                                                           placeholder="blog-url-slug">
-                                                    <button class="btn btn-outline-secondary" type="button" id="generateSlug">
-                                                        <i class="fas fa-magic"></i>
-                                                    </button>
-                                                </div>
-                                                <div id="slug-message" class="form-text mt-1">
-                                                    <i class="fas fa-info-circle me-1"></i>URL-friendly version of the title
-                                                </div>
-                                                @error('slug')
-                                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Blog Content -->
-                                <div class="card border-0 shadow-sm mb-4">
-                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                                        <h6 class="mb-0"><i class="fas fa-edit me-2"></i>Blog Content</h6>
-                                        <small class="text-muted"><i class="fas fa-lightbulb me-1"></i>Rich text editor</small>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <label for="editor" class="form-label fw-medium">
-                                                <i class="fas fa-align-left me-1 text-primary"></i>Main Content <span class="text-danger">*</span>
-                                            </label>
-                                            <textarea id="editor"
-                                                      name="content"
-                                                      class="form-control @error('content') is-invalid @enderror"
-                                                      rows="10">{{ old('content') }}</textarea>
-                                            @error('content')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Meta Information -->
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="fas fa-search me-2"></i>SEO Meta Information</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="meta_title" class="form-label fw-medium">
-                                                    <i class="fas fa-tag me-1 text-primary"></i>Meta Title
-                                                </label>
-                                                <input type="text"
-                                                       class="form-control @error('meta_title') is-invalid @enderror"
-                                                       name="meta_title"
-                                                       id="meta_title"
-                                                       value="{{ old('meta_title') }}"
-                                                       placeholder="SEO title for search engines">
-                                                @error('meta_title')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
-                                            <div class="col-md-6 mb-3">
-                                                <label for="meta_keyword" class="form-label fw-medium">
-                                                    <i class="fas fa-key me-1 text-primary"></i>Meta Keywords
-                                                </label>
-                                                <input type="text"
-                                                       class="form-control @error('meta_keyword') is-invalid @enderror"
-                                                       name="meta_keyword"
-                                                       id="meta_keyword"
-                                                       value="{{ old('meta_keyword') }}"
-                                                       placeholder="Keywords separated by commas">
-                                                @error('meta_keyword')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
-                                            <div class="col-12 mb-3">
-                                                <label for="meta_description" class="form-label fw-medium">
-                                                    <i class="fas fa-file-alt me-1 text-primary"></i>Meta Description
-                                                </label>
-                                                <textarea name="meta_description"
-                                                          id="meta_description"
-                                                          class="form-control @error('meta_description') is-invalid @enderror"
-                                                          rows="3"
-                                                          placeholder="Brief description for search results">{{ old('meta_description') }}</textarea>
-                                                <div class="form-text">Recommended: 150-160 characters</div>
-                                                @error('meta_description')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-
-                                            <div class="col-12 mb-3">
-                                                <label for="meta_tag" class="form-label fw-medium">
-                                                    <i class="fas fa-tags me-1 text-primary"></i>Meta Tags
-                                                </label>
-                                                <input type="text"
-                                                       class="form-control @error('meta_tag') is-invalid @enderror"
-                                                       name="meta_tag"
-                                                       id="meta_tag"
-                                                       value="{{ old('meta_tag') }}"
-                                                       placeholder="Tags separated by commas">
-                                                @error('meta_tag')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Right Column - Sidebar -->
-                            <div class="col-lg-4">
-                                <!-- Image Upload -->
-                                <div class="card border-0 shadow-sm mb-4">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="fas fa-image me-2"></i>Featured Image</h6>
-                                    </div>
-                                    <div class="card-body text-center">
-                                        <div class="image-upload-area mb-3" id="imageUploadArea">
-                                            <div class="upload-placeholder rounded border-3 border-dashed p-5">
-                                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                                <p class="text-muted mb-2">Drag & drop or click to upload</p>
-                                                <p class="text-muted small">Recommended: 1200×630 pixels</p>
-                                            </div>
-                                            <input type="file"
-                                                   class="form-control d-none"
-                                                   name="category_image"
-                                                   id="blog_image"
-                                                   accept="image/*"
-                                                   required>
-                                        </div>
-
-                                        <div id="imagePreview" class="mb-3">
-                                            <!-- Preview will appear here -->
-                                        </div>
-
-                                        <div class="form-text">
-                                            <i class="fas fa-info-circle me-1"></i>Upload a high-quality featured image
-                                        </div>
-                                        @error('category_image')
-                                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Category & Settings -->
-                                <div class="card border-0 shadow-sm mb-4">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="fas fa-cog me-2"></i>Settings</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <label for="category_id" class="form-label fw-medium">
-                                                <i class="fas fa-folder me-1 text-primary"></i>Category <span class="text-danger">*</span>
-                                            </label>
-                                            <select class="form-select @error('category') is-invalid @enderror"
-                                                    name="category"
-                                                    id="category_id"
-                                                    required>
-                                                <option value="">Select Category</option>
-                                                @foreach ($categories as $category)
-                                                <option value="{{ $category->slug }}" {{ old('category') == $category->slug ? 'selected' : '' }}>
-                                                    {{ ucfirst($category->slug) }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-                                            @error('category')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input"
-                                                       type="checkbox"
-                                                       name="top"
-                                                       id="top"
-                                                       value="1"
-                                                       {{ old('top') ? 'checked' : '' }}
-                                                       role="switch">
-                                                <label class="form-check-label fw-medium" for="top">
-                                                    <i class="fas fa-star me-1 text-warning"></i>Mark as Top Blog
-                                                </label>
-                                            </div>
-                                            <div class="form-text">
-                                                <i class="fas fa-info-circle me-1"></i>Featured on homepage
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Status & Actions -->
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Publish</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="d-grid gap-2">
-                                            <button type="submit" class="btn btn-primary btn-lg">
-                                                <i class="fas fa-save me-2"></i>Create Blog
-                                            </button>
-                                            <button type="reset" class="btn btn-outline-secondary">
-                                                <i class="fas fa-redo me-2"></i>Reset Form
-                                            </button>
-                                            <a href="{{ route('admin.blog.index') }}" class="btn btn-outline-danger">
-                                                <i class="fas fa-times me-2"></i>Cancel
-                                            </a>
-                                        </div>
-
-                                        <div class="mt-3 text-center">
-                                            <small class="text-muted">
-                                                <i class="fas fa-clock me-1"></i>Created automatically
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Quick Tips -->
-                                <div class="card border-0 shadow-sm mt-4">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Quick Tips</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <ul class="list-unstyled mb-0">
-                                            <li class="mb-2">
-                                                <i class="fas fa-check-circle text-success me-2"></i>
-                                                <small>Use clear, descriptive titles</small>
-                                            </li>
-                                            <li class="mb-2">
-                                                <i class="fas fa-check-circle text-success me-2"></i>
-                                                <small>Add relevant images for engagement</small>
-                                            </li>
-                                            <li class="mb-2">
-                                                <i class="fas fa-check-circle text-success me-2"></i>
-                                                <small>Optimize for SEO with keywords</small>
-                                            </li>
-                                            <li>
-                                                <i class="fas fa-check-circle text-success me-2"></i>
-                                                <small>Categorize properly for organization</small>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                <div class="col-sm-6">
+                    <nav aria-label="breadcrumb" class="float-sm-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('admin.blog.index') }}">Blog Posts</a></li>
+                            <li class="breadcrumb-item active">Create Blog</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Alerts -->
+            @if (session()->has('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Success!</strong> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
+
+            @if ($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Validation Error(s):</strong>
+                <ul class="mb-0 ps-3">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
+
+            <!-- Form -->
+            <form method="POST" action="{{ route('admin.blog.store')}}" enctype="multipart/form-data" id="blogForm">
+                @csrf
+                
+                <div class="row">
+                    <!-- Left column - Main content -->
+                    <div class="col-lg-8">
+                        <!-- Blog Content Card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white py-3">
+                                <h3 class="h5 mb-0"><i class="fas fa-edit me-2"></i>Blog Content</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label for="title" class="form-label fw-semibold">Blog Title <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fas fa-heading text-muted"></i></span>
+                                        <input type="text" class="form-control" name="title" id="title" 
+                                               value="{{ old('title') }}" placeholder="Enter blog title" required />
+                                    </div>
+                                    <small class="form-text text-muted mt-1">A clear, descriptive title for your blog post.</small>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="slug" class="form-label fw-semibold">Slug / URL <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="fas fa-link text-muted"></i></span>
+                                        <input type="text" class="form-control" name="slug" id="slug" 
+                                               value="{{ old('slug') }}" placeholder="blog-post-url" required />
+                                    </div>
+                                    <small class="form-text text-muted mt-1">URL-friendly version of the title (auto-generated).</small>
+                                    <div id="slug-message" class="mt-2"></div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="content" class="form-label fw-semibold">Main Content <span class="text-danger">*</span></label>
+                                    <textarea id="editor" name="content" class="form-control" rows="12">{{ old('content') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Featured Image Card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-info text-white py-3">
+                                <h3 class="h5 mb-0"><i class="fas fa-image me-2"></i>Featured Image</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="blog_image" class="form-label fw-semibold">Upload Blog Image <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" name="category_image" id="blog_image" accept="image/*" required>
+                                    <small class="form-text text-muted">Recommended size: 1200x630px. Max file size: 2MB.</small>
+                                </div>
+
+                                <div class="image-preview-container text-center mt-4">
+                                    <div id="imagePreview" class="border rounded p-4 bg-light" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                                        <div class="text-muted">
+                                            <i class="fas fa-image fa-3x mb-3"></i>
+                                            <p class="mb-0">Image preview will appear here</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right column - Sidebar -->
+                    <div class="col-lg-4">
+                        <!-- Publish Card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-success text-white py-3">
+                                <h3 class="h5 mb-0"><i class="fas fa-paper-plane me-2"></i>Publish</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <strong class="text-muted">Status:</strong>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="status" id="status_published" value="enable" checked>
+                                            <label class="form-check-label" for="status_published">Published</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="fas fa-paper-plane me-2"></i>Publish Blog Post
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" id="saveDraftBtn">
+                                        <i class="fas fa-save me-2"></i>Save as Draft
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Categories & Language Card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-warning text-dark py-3">
+                                <h3 class="h5 mb-0"><i class="fas fa-tags me-2"></i>Categories & Language</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="category_id" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="category_id" id="category_id" required>
+                                        <option value="">Select Category</option>
+                                        @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->slug }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="language_id" class="form-label fw-semibold">Language <span class="text-danger">*</span></label>
+                                    <select name="language_id" id="language_id" class="form-select" required>
+                                        <option value="" disabled {{ old('language_id') ? '' : 'selected' }}>-- Select Language --</option>
+                                        @foreach ($langs as $lang)
+                                        <option value="{{ $lang->id }}" {{ old('language_id') == $lang->id ? 'selected' : '' }}>
+                                            {{ $lang->code }} - {{ $lang->name ?? 'Language' }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEO Settings Card -->
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-dark text-white py-3">
+                                <h3 class="h5 mb-0"><i class="fas fa-search me-2"></i>SEO Settings</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="meta_title" class="form-label fw-semibold">Meta Title</label>
+                                    <input type="text" class="form-control" name="meta_title" id="meta_title" 
+                                           value="{{ old('meta_title') }}" placeholder="Meta title for SEO">
+                                    <small class="form-text text-muted">Recommended: 50-60 characters</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="meta_tag" class="form-label fw-semibold">Meta Tag</label>
+                                    <input type="text" class="form-control" name="meta_tag" id="meta_tag" 
+                                           value="{{ old('meta_tag') }}" placeholder="e.g., technology, blog, tips">
+                                    <small class="form-text text-muted">Separate tags with commas</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="meta_keyword" class="form-label fw-semibold">Meta Keyword</label>
+                                    <input type="text" class="form-control" name="meta_keyword" id="meta_keyword" 
+                                           value="{{ old('meta_keyword') }}" placeholder="Primary keywords">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="meta_description" class="form-label fw-semibold">Meta Description</label>
+                                    <textarea name="meta_description" id="meta_description" class="form-control" 
+                                              rows="4" placeholder="Brief description for search engines">{{ old('meta_description') }}</textarea>
+                                    <small class="form-text text-muted">Recommended: 150-160 characters</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
 </div>
 @endsection
 
 @push('styles')
 <style>
-    /* Custom Styles for Blog Create Form */
-    .icon-circle {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .border-dashed {
-        border-style: dashed !important;
-    }
-
-    .image-upload-area {
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .image-upload-area:hover {
-        border-color: var(--primary-color) !important;
-        background-color: rgba(67, 97, 238, 0.05);
-    }
-
-    .upload-placeholder {
-        transition: all 0.3s ease;
-    }
-
-    .upload-placeholder:hover {
-        transform: translateY(-2px);
-    }
-
-    .image-preview {
-        max-width: 100%;
-        border-radius: 0.5rem;
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .image-preview:hover {
-        transform: scale(1.02);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-
-    .form-switch .form-check-input {
-        width: 3em;
-        height: 1.5em;
-    }
-
-    .form-switch .form-check-input:checked {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-    }
-
     .card {
-        border-radius: 0.75rem;
+        border: none;
+        border-radius: 10px;
         overflow: hidden;
     }
-
+    
     .card-header {
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-        padding: 1rem 1.25rem;
+        border-bottom: none;
     }
-
-    .card-body {
-        padding: 1.5rem;
+    
+    .form-label {
+        color: #2d3748;
+        font-size: 0.95rem;
     }
-
-    .form-control-lg, .form-select-lg {
-        font-size: 1rem;
-        padding: 0.75rem 1rem;
+    
+    .input-group-text {
+        border-right: none;
     }
-
+    
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+        border-color: #86b7fe;
+    }
+    
+    #imagePreview {
+        transition: all 0.3s ease;
+    }
+    
+    #imagePreview:hover {
+        background-color: #f8f9fa;
+    }
+    
+    #imagePreview img {
+        max-width: 100%;
+        max-height: 250px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
     .btn-lg {
         padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        font-weight: 500;
+        font-weight: 600;
     }
-
-    /* Form control focus states */
-    .form-control:focus, .form-select:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+    
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        margin-bottom: 0;
     }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .page-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .btn-lg {
-            width: 100%;
-        }
-
-        .card-body {
-            padding: 1rem;
-        }
-
-        .input-group-lg {
-            flex-wrap: wrap;
-        }
-
-        .input-group-lg .input-group-text {
-            width: 100%;
-            justify-content: center;
-            margin-bottom: 0.5rem;
-        }
+    
+    .breadcrumb-item a {
+        color: #6c757d;
+        text-decoration: none;
     }
-
-    /* Animation for alerts */
+    
+    .breadcrumb-item a:hover {
+        color: #0d6efd;
+    }
+    
     .alert {
-        animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Loading animation for slug check */
-    .loading {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        border: 2px solid #f3f3f3;
-        border-top: 2px solid var(--primary-color);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        border-radius: 8px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 </style>
 @endpush
 
 @push('scripts')
 <script>
-    $(document).ready(function() {
-        // Initialize tooltips
-        $('[data-bs-toggle="tooltip"]').tooltip();
-
-        // Image upload area click handler
-        $('#imageUploadArea').on('click', function() {
-            $('#blog_image').click();
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // CKEditor is already initialized in main layout
+        
+        // Update file input to show selected file name
+        const blogImageInput = document.getElementById('blog_image');
+        const imagePreview = document.getElementById('imagePreview');
+        
+        // Initialize image preview functionality
+        blogImageInput.addEventListener('change', function() {
+            previewImage(this);
         });
-
-        // Image preview functionality
-        $('#blog_image').on('change', function() {
-            var file = this.files[0];
-            if (file) {
-                var reader = new FileReader();
-                reader.onload = function(event) {
-                    var preview = `
-                        <div class="image-preview-container position-relative">
-                            <img src="${event.target.result}"
-                                 class="img-fluid rounded image-preview mb-2"
-                                 alt="Preview">
-                            <button type="button"
-                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2 remove-image"
-                                    data-bs-toggle="tooltip"
-                                    title="Remove image">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `;
-                    $('#imagePreview').html(preview);
-                    $('.upload-placeholder').hide();
-
-                    // Re-initialize tooltips
-                    $('[data-bs-toggle="tooltip"]').tooltip();
-                }
-                reader.readAsDataURL(file);
+        
+        // Auto-generate slug from title
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        
+        titleInput.addEventListener('input', function() {
+            const value = this.value;
+            // Convert to slug format
+            const slugValue = value
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim()
+                .replace(/\s/g, ' ');
+            
+            slugInput.value = slugValue;
+            
+            // Check slug existence
+            if(slugValue) {
+                checkSlugExistence(slugValue);
             }
         });
-
-        // Remove image preview
-        $(document).on('click', '.remove-image', function() {
-            $('#blog_image').val('');
-            $('#imagePreview').html('');
-            $('.upload-placeholder').show();
-        });
-
-        // Generate slug from title
-        $('#generateSlug').on('click', function() {
-            var title = $('#title').val();
-            if (title) {
-                var slug = title.toLowerCase()
-                    .replace(/[^\w\s]/gi, '')
-                    .replace(/\s+/g, '-')
-                    .replace(/--+/g, '-')
-                    .trim();
-                $('#slug').val(slug);
+        
+        // Check slug existence on manual input
+        slugInput.addEventListener('keyup', function() {
+            const slug = this.value;
+            
+            if (slug) {
                 checkSlugExistence(slug);
+            } else {
+                const slugMessage = document.getElementById('slug-message');
+                slugMessage.innerHTML = '<span class="text-muted">Please enter a slug</span>';
             }
         });
-
-        // Auto-generate slug on title change
-        $('#title').on('input', function() {
-            var title = $(this).val();
-            var slug = title.toLowerCase()
-                .replace(/[^\w\s]/gi, '')
-                .replace(/\s+/g, '-')
-                .replace(/--+/g, '-')
-                .trim();
-            $('#slug').val(slug);
-            checkSlugExistence(slug);
-        });
-
-        // Check slug existence
-        function checkSlugExistence(slug) {
-            if (!slug) {
-                $('#slug-message').html('<i class="fas fa-info-circle me-1"></i>Please enter a slug').removeClass('text-success text-danger').addClass('text-muted');
-                return;
-            }
-
-            $('#slug-message').html('<div class="loading me-2"></div>Checking...').removeClass('text-success text-danger').addClass('text-muted');
-
-            $.ajax({
-                url: '{{ route('admin.blog.check.slug') }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    slug: slug
-                },
-                success: function(response) {
-                    if (response.exists) {
-                        $('#slug-message').html('<i class="fas fa-times-circle me-1"></i>Blog with this slug already exists').removeClass('text-success text-muted').addClass('text-danger');
-                        $('#slug').addClass('is-invalid');
-                    } else {
-                        $('#slug-message').html('<i class="fas fa-check-circle me-1"></i>Slug is available').removeClass('text-danger text-muted').addClass('text-success');
-                        $('#slug').removeClass('is-invalid');
-                    }
-                },
-                error: function() {
-                    $('#slug-message').html('<i class="fas fa-exclamation-triangle me-1"></i>Error checking slug').removeClass('text-success text-muted').addClass('text-danger');
-                }
+        
+        // Save as draft button
+        const saveDraftBtn = document.getElementById('saveDraftBtn');
+        if(saveDraftBtn) {
+            saveDraftBtn.addEventListener('click', function() {
+                // Create a hidden input for draft status
+                const draftInput = document.createElement('input');
+                draftInput.type = 'hidden';
+                draftInput.name = 'status';
+                draftInput.value = 'draft';
+                
+                // Add to form and submit
+                const form = document.getElementById('blogForm');
+                form.appendChild(draftInput);
+                form.submit();
             });
         }
-
-        // Check slug on manual input
-        $('#slug').on('keyup', function() {
-            var slug = $(this).val();
-            checkSlugExistence(slug);
+    });
+    
+    // Function to check slug existence
+    function checkSlugExistence(slug) {
+        const slugMessage = document.getElementById('slug-message');
+        
+        // Show loading state
+        slugMessage.innerHTML = '<span class="text-info"><i class="fas fa-spinner fa-spin me-1"></i> Checking slug availability...</span>';
+        
+        fetch('{{ route("admin.blog.check.slug") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ slug: slug })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.exists) {
+                slugMessage.innerHTML = '<span class="text-danger"><i class="fas fa-times-circle me-1"></i> This slug is already taken</span>';
+            } else {
+                slugMessage.innerHTML = '<span class="text-success"><i class="fas fa-check-circle me-1"></i> This slug is available</span>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            slugMessage.innerHTML = '<span class="text-warning"><i class="fas fa-exclamation-triangle me-1"></i> Unable to verify slug</span>';
         });
-
-        // Auto-fill meta title from blog title
-        $('#title').on('blur', function() {
-            if ($('#meta_title').val() === '') {
-                $('#meta_title').val($(this).val());
-            }
-        });
-
-        // Auto-fill meta description from first 160 chars of content
-        $('#editor').on('blur', function() {
-            if ($('#meta_description').val() === '') {
-                var content = $(this).val().replace(/<[^>]*>/g, '').substring(0, 160);
-                $('#meta_description').val(content);
-            }
-        });
-
-        // Character counter for meta description
-        $('#meta_description').on('input', function() {
-            var length = $(this).val().length;
-            var counter = $(this).next('.form-text');
-            if (counter.length === 0) {
-                $(this).after('<div class="form-text character-count"></div>');
-                counter = $(this).next('.character-count');
-            }
-
-            var color = 'text-muted';
-            if (length < 120) {
-                color = 'text-warning';
-            } else if (length > 160) {
-                color = 'text-danger';
-            }
-
-            counter.html(`<i class="fas fa-ruler me-1"></i>${length}/160 characters <span class="${color}">(${160 - length} remaining)</span>`);
-        }).trigger('input');
-
-        // Form submission validation
-        $('#blogForm').on('submit', function(e) {
-            var title = $('#title').val();
-            var slug = $('#slug').val();
-            var category = $('#category_id').val();
-            var language = $('#language_id').val();
-            var image = $('#blog_image').val();
-            var content = $('#editor').val();
-
-            var isValid = true;
-
-            // Reset previous error states
-            $('.is-invalid').removeClass('is-invalid');
-
-            if (!title.trim()) {
-                $('#title').addClass('is-invalid');
-                isValid = false;
-            }
-
-            if (!slug.trim()) {
-                $('#slug').addClass('is-invalid');
-                isValid = false;
-            }
-
-            if (!category) {
-                $('#category_id').addClass('is-invalid');
-                isValid = false;
-            }
-
-            if (!language) {
-                $('#language_id').addClass('is-invalid');
-                isValid = false;
-            }
-
-            if (!image) {
-                $('#imageUploadArea').addClass('border-danger');
-                isValid = false;
-            }
-
-            if (!content.trim()) {
-                $('#editor').addClass('is-invalid');
-                isValid = false;
-            }
-
-            if (!isValid) {
-                e.preventDefault();
-                showNotification('Please fill in all required fields correctly.', 'warning');
-                $('html, body').animate({
-                    scrollTop: $('.is-invalid').first().offset().top - 100
-                }, 500);
-            }
-        });
-
-        // Notification function
-        function showNotification(message, type = 'info') {
-            const alertClass = type === 'success' ? 'alert-success' :
-                             type === 'error' ? 'alert-danger' :
-                             type === 'warning' ? 'alert-warning' : 'alert-info';
-
-            const icon = type === 'success' ? 'check-circle' :
-                        type === 'error' ? 'exclamation-circle' :
-                        type === 'warning' ? 'exclamation-triangle' : 'info-circle';
-
-            const notification = $(`
-                <div class="alert ${alertClass} alert-dismissible fade show position-fixed shadow-lg"
-                     style="top: 20px; right: 20px; z-index: 1060; min-width: 300px; max-width: 400px;"
-                     role="alert">
-                    <div class="d-flex">
-                        <i class="fas fa-${icon} me-3 fs-4"></i>
-                        <div class="flex-grow-1">
-                            <p class="mb-0">${message}</p>
+    }
+    
+    // Function to preview selected image
+    function previewImage(input) {
+        const preview = document.getElementById('imagePreview');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.innerHTML = '';
+                
+                // Create image element
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'img-fluid rounded';
+                img.style.maxHeight = '250px';
+                
+                // Create remove button container
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'mt-3';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'btn btn-sm btn-outline-danger';
+                removeBtn.innerHTML = '<i class="fas fa-trash me-1"></i> Remove Image';
+                removeBtn.onclick = function() {
+                    document.getElementById('blog_image').value = '';
+                    preview.innerHTML = `
+                        <div class="text-muted">
+                            <i class="fas fa-image fa-3x mb-3"></i>
+                            <p class="mb-0">Image preview will appear here</p>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                </div>
-            `);
-
-            $('body').append(notification);
-
-            setTimeout(() => {
-                notification.alert('close');
-            }, 5000);
+                    `;
+                };
+                
+                buttonContainer.appendChild(removeBtn);
+                preview.appendChild(img);
+                preview.appendChild(buttonContainer);
+            };
+            
+            reader.readAsDataURL(input.files[0]);
         }
+    }
+    
+    // Character counter for meta fields (optional enhancement)
+    function initMetaFieldCounters() {
+        const metaTitle = document.getElementById('meta_title');
+        const metaDesc = document.getElementById('meta_description');
+        
+        if(metaTitle) {
+            metaTitle.addEventListener('input', function() {
+                updateCharCounter(this, 'metaTitleCounter');
+            });
+        }
+        
+        if(metaDesc) {
+            metaDesc.addEventListener('input', function() {
+                updateCharCounter(this, 'metaDescCounter');
+            });
+        }
+    }
+    
+    function updateCharCounter(field, counterId) {
+        let counter = document.getElementById(counterId);
+        if(!counter) {
+            counter = document.createElement('div');
+            counter.id = counterId;
+            counter.className = 'form-text text-end';
+            field.parentNode.appendChild(counter);
+        }
+        
+        const length = field.value.length;
+        counter.textContent = `${length} characters`;
+        
+        if(field.id === 'meta_title') {
+            if(length > 60) {
+                counter.className = 'form-text text-end text-danger';
+            } else if(length > 50) {
+                counter.className = 'form-text text-end text-warning';
+            } else {
+                counter.className = 'form-text text-end text-success';
+            }
+        } else if(field.id === 'meta_description') {
+            if(length > 160) {
+                counter.className = 'form-text text-end text-danger';
+            } else if(length > 150) {
+                counter.className = 'form-text text-end text-warning';
+            } else {
+                counter.className = 'form-text text-end text-success';
+            }
+        }
+    }
+    
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        initMetaFieldCounters();
     });
 </script>
 @endpush

@@ -14,7 +14,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.category') }}">Categories</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.category.index') }}">Categories</a></li>
                         <li class="breadcrumb-item active">Create</li>
                     </ol>
                 </div>
@@ -186,7 +186,7 @@
                                     <button type="submit" class="btn btn-primary btn-lg">
                                         <i class="fas fa-save mr-1"></i> Save Category
                                     </button>
-                                    <a href="{{ route('admin.category') }}" class="btn btn-outline-secondary">
+                                    <a href="{{ route('admin.category.index') }}" class="btn btn-outline-secondary">
                                         <i class="fas fa-times mr-1"></i> Cancel
                                     </a>
                                 </div>

@@ -26,7 +26,7 @@ class BlogController extends Controller
     }
     public function index()
     {
-        $blogs = Blog::with('language', 'category')->get();
+        $blogs = Blog::with('language', 'category')->orderBy('created_at','desc')->get();
         return view('admin.blog.index', compact('blogs'));
     }
     public function create()
@@ -49,6 +49,7 @@ class BlogController extends Controller
             'top' => 'nullable|integer',
             'category_id' => 'nullable|integer',
             'language_id' =>'required|integer',
+            'status' => 'nullable|string|in:enable,disabled',
         ]);
 
         // Handle file upload for category_image
@@ -83,8 +84,8 @@ class BlogController extends Controller
         $blog->meta_description = $request->input('meta_description');
         $blog->meta_keyword = $request->input('meta_keyword');
         $blog->top = $request->input('top');
-        $blog->category = $request->input('category');
-
+        $blog->category_id = $request->input('category_id');
+        $blog->status = $request->input('status');
         $content = $request->input('content');
 
         $dom = new \DOMDocument();
@@ -116,11 +117,17 @@ class BlogController extends Controller
         $blog->content = $dom->saveHTML();
         $blog->save();
 
-        return redirect()->back()->withInput()->with('success', 'Blog created successfully.');
+        // return redirect()->back()->withInput()->with('success', 'Blog created successfully.');
+        return redirect()->route('admin.blog.show', ['id' => $blog->id])->with('success', 'Blog created successfully.');
+    }
+    public function show($id)
+    {
+        $blog = Blog::findOrFail($id);
+        return view('admin.blog.show', compact('blog'));
     }
     public function edit($id)
     {
-        $blog = Blog::findOrFail($id);
+        $blog = Blog::with('language', 'category')->findOrFail($id);
         $langs = Language::all();
         $categories = Categories::all();
         return view('admin.blog.edit', compact('blog', 'langs', 'categories'));
@@ -139,6 +146,7 @@ class BlogController extends Controller
             'meta_keyword' => 'nullable|string|max:255',
             'top' => 'nullable|integer',
             'category_id' => 'nullable|integer',
+            'status' => 'nullable|string|in:enable,disabled',
         ]);
 
         // Find the blog by ID
@@ -190,7 +198,9 @@ class BlogController extends Controller
         $blog->meta_description = $request->input('meta_description');
         $blog->meta_keyword = $request->input('meta_keyword');
         $blog->top = $request->input('top');
-        $blog->category = $request->input('category', $blog->category);
+        $blog->category_id = $request->input('category_id', $blog->category_id);
+        $blog->status = $request->input('status', $blog->status);
+
 
 
         // Process content from CKEditor
@@ -209,7 +219,7 @@ class BlogController extends Controller
         $blog->save();
 
         // Redirect back with a success message
-        return redirect()->route('admin.blog.index')->with('success', 'Blog updated successfully.');
+        return redirect()->route('admin.blog.show', ['id' => $id])->with('success', 'Blog updated successfully.');
     }
     public function destroy($id)
     {
@@ -218,7 +228,7 @@ class BlogController extends Controller
 
         $blog->delete();
 
-        return redirect()->back()->with('success', 'Blog deleted successfully.');
+        return redirect()->route('admin.blog.index')->with('success', 'Blog deleted successfully.');
     }
     public function deleteSelected(Request $request)
     {

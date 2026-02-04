@@ -106,9 +106,9 @@
                                         <select name="store" id="store" class="form-control" required>
                                             <option value="" disabled>-- Select Store --</option>
                                             @foreach($stores as $store)
-                                                <option value="{{ $store->slug }}"
+                                                <option value="{{ $store->id }}"
                                                     data-language="{{ $store->language_id }}"
-                                                    {{ $coupons->store == $store->slug ? 'selected' : '' }}>
+                                                    {{ $coupons->stores->id == $store->id ? 'selected' : '' }}>
                                                     {{ $store->name }} ({{ $store->slug }})
                                                 </option>
                                             @endforeach

@@ -25,5 +25,9 @@ class Categories extends Model
     {
         return $this->hasMany(Stores::class); 
     }
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class, 'category_id'); 
+    }
 
 }

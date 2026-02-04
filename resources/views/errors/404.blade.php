@@ -1,4 +1,4 @@
-@extends('main')
+@extends('layouts.main')
 @section('title','Page Not Found - 404 Error')
 @section('description','The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.')
 @section('main-content')
@@ -51,7 +51,7 @@
                 <h5 class="mb-4">You might be looking for:</h5>
                 <div class="row g-3 justify-content-center">
                     <div class="col-md-3 col-6">
-                        <a href="{{ route('store.show', ['lang' => app()->getLocale()]) }}" class="quick-link-card">
+                        <a href="{{ route('store', ['lang' => app()->getLocale()]) }}" class="quick-link-card">
                             <i class="fas fa-store fa-2x mb-3"></i>
                             <span>Popular Stores</span>
                         </a>

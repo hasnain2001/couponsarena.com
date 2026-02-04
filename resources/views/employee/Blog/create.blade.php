@@ -1,4 +1,4 @@
-@extends('employee.master')
+@extends('employee.layouts.master')
 @section('title')
     Create|Blog
 @endsection

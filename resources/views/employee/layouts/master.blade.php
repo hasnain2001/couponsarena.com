@@ -42,7 +42,7 @@
 
 
     </style>
-
+@stack('scripts')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -270,6 +270,7 @@
         </aside>
 
     </div>
+    @stack('scripts')
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
     <script src="{{ asset('js/cke-ditor.js') }}">
 

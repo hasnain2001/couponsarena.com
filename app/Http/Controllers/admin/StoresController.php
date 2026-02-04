@@ -39,7 +39,7 @@ class StoresController extends Controller
         $coupons = Coupons::where('store_id', $store->id)->orderByRaw('CAST(`order` AS SIGNED) ASC')->get();
         $stores = Stores::orderByDesc('created_at')->get();
         $langs = Language::all();
-        $relatedStores = Stores::where('category', $store->category)->where('id', '!=', $store->id)->get();
+        $relatedStores = Stores::where('category_id', $store->category->id)->where('id', '!=', $store->id)->get();
 
         return view('admin.stores.store-detail', compact('store', 'coupons', 'relatedStores', 'stores', 'langs'));
     }
@@ -70,7 +70,7 @@ class StoresController extends Controller
             'top_store' => 'nullable|integer',
             'description' => 'nullable|string',
             'about' => 'nullable|string',
-            'affliliate_url' => 'required',
+            'affiliate_url' => 'required',
             'destination_url' => 'required|url',
             'category_id' => 'required|integer',
             'title' => 'nullable|string',
@@ -100,7 +100,7 @@ class StoresController extends Controller
             'top_store' => $validated['top_store'] ?? null,
             'description' => $validated['description'] ?? null,
             'about' => $validated['about'] ?? null,
-            'affliliate_url' => $validated['affliliate_url'] ?? null,
+            'affiliate_url' => $validated['affiliate_url'] ?? null,
             'destination_url' => $validated['destination_url'] ?? null,
             'category_id' => $validated['category_id'],
             'title' => $validated['title'] ?? null,
@@ -114,7 +114,7 @@ class StoresController extends Controller
             'user_id' => Auth::id(),
         ]);
 
-        return redirect()->route('admin.store_details',['slug' => Str::slug($stores->slug)] )->with('success', 'Store Created Successfully');
+        return redirect()->route('admin.store.store_details',['slug' => Str::slug($stores->slug)] )->with('success', 'Store Created Successfully');
     }
     public function edit_store($id)
     {
@@ -191,7 +191,7 @@ class StoresController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.store_details', ['slug' => Str::slug($store->slug)])
+            ->route('admin.store.store_details', ['slug' => Str::slug($store->slug)])
             ->with('success', 'Store Updated Successfully');
     }
     public function delete_store($id)
@@ -209,12 +209,12 @@ class StoresController extends Controller
             ]);
 
             // Delete associated coupons with the same store name
-            Coupons::where('store', $store->name)->delete();
+            Coupons::where('store_id', $store->id)->delete();
 
             // Delete the store (soft delete if the SoftDeletes trait is used)
             $store->delete();
 
-            return redirect()->back()->with('success', 'Store and associated coupons marked for deletion.');
+            return redirect()->route('admin.store.index')->with('success', 'Store and associated coupons marked for deletion.');
         }
 
         return redirect()->back()->with('error', 'Store not found.');
