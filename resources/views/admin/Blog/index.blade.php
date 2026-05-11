@@ -173,6 +173,7 @@
                                 <th width="60">#</th>
                                 <th>Title & Description</th>
                                 <th>Category</th>
+                                <th>Store</th>
                                 <th width="100" class="text-center">Image</th>
                                 <th width="100" class="text-center">Status</th>
                                 <th width="140" class="text-center">Created</th>
@@ -199,6 +200,11 @@
                                     <td>
                                         <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-1">
                                             <i class="fas fa-tag me-1"></i>{{ $blog->category ? $blog->category->title : 'Uncategorized' }}
+                                        </span>
+                                    </td>
+                                     <td>
+                                        <span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-3 py-1">
+                                            <i class="fas fa-tag me-1"></i>{{ $blog->store ? $blog->store->name : 'no store' }}
                                         </span>
                                     </td>
                                     <td class="text-center">

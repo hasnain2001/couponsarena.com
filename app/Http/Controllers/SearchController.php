@@ -17,7 +17,7 @@ class SearchController extends Controller
         // If exact match found, redirect directly
         $exactBlog = Blog::where('slug', $query)->orWhere('title', $query)->first();
         if ($exactBlog) {
-            return redirect()->route('blog-details', ['slug' => $exactBlog->slug]);
+            return redirect()->route('blog-details', ['slug' => Str::slug($exactBlog->slug)]);
         }
 
         // For AJAX requests, return suggestions
@@ -36,7 +36,7 @@ class SearchController extends Controller
                             'slug' => $blog->slug,
                             'image' => $blog->category_image ? asset($blog->category_image) : null,
                             'category' => $blog->category->title ?? 'General',
-                            'url' => route('blog-details', ['slug' => $blog->slug])
+                            'url' => route('blog-details', ['slug' => Str::slug($blog->slug)])
                         ];
                     });
                 $suggestions = array_merge($suggestions, $blogs->toArray());
@@ -52,7 +52,7 @@ class SearchController extends Controller
                             'type' => 'category',
                             'name' => $category->title,
                             'slug' => $category->slug,
-                            'url' => route('related_category', ['slug' => $category->slug])
+                            'url' => route('category.details', ['slug' => $category->slug])
                         ];
                     });
                 $suggestions = array_merge($suggestions, $categories->toArray());
@@ -107,9 +107,9 @@ class SearchController extends Controller
                     $item = $results[$searchType]->first();
                     switch ($searchType) {
                         case 'blogs':
-                            return redirect()->route('blog-details', ['slug' => $item->slug]);
+                            return redirect()->route('blog-details', ['slug' => Str::slug($item->slug)]);
                         case 'categories':
-                            return redirect()->route('related_category', ['slug' => $item->slug]);
+                            return redirect()->route('category.details', ['slug' => Str::slug($item->slug)]);
                     }
                 }
             }

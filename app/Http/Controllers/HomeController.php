@@ -146,36 +146,73 @@ class HomeController extends Controller
         'slug' => $slug
         ]);
         }
-        $chunks = Stores::where('category_id', $blog->category_id)->where('language_id', $blog->language_id)
+        $chunks = Stores::where('id', $blog->store_id)->where('language_id', $blog->language_id)
         ->get();
+        $relatedblogs = Blog::where('id', '!=', $blog->id)
+        ->where('category_id',$blog->category_id)
+        ->where('language_id', $blog->language_id)
+        ->orderByDesc('created_at')->get();
 
-        return view('front-end.blog_details', compact('blog', 'chunks',));
+        return view('front-end.blog_details', compact('blog', 'chunks','relatedblogs'));
     }
-    public function stores(Request $request, $lang = null)
+
+    public function stores(Request $request , $lang = 'en')
     {
-        $languageCode = $lang ?? 'en';
-        app()->setLocale($languageCode);
-
-        // Fetch the language, or default to 404 if not found
-        $language = Language::where('code', $languageCode)->firstOr(function () {
+        app()->setLocale($lang);
+        $language = language::where('code', $lang)->first();
+        if (!$language) {
             abort(404, 'Language not found');
-        });
+        }
+        $letter = $request->get('letter', 'all');
+        $query = Stores::withCount('coupons')
+                        ->where('language_id', $language->id)
+                        ->orderBy('name');
+        
+        if ($letter && $letter !== 'all') {
+            if ($letter === '#') {
+                $query->whereRaw("LOWER(SUBSTRING(name, 1, 1)) NOT REGEXP '^[a-z]'");
+            } else {
+                $query->where('name', 'LIKE', $letter . '%');
+            }
+        }
+        
+        if ($letter === 'all') {
+            $allStores = $query->get();
+            
+            $stores = $query->paginate(40);
+            
+            $storesByLetter = [];
+            $totalStoresCount = $allStores->count();
+            
+            foreach ($allStores as $store) {
+                $firstChar = strtoupper(substr($store->name, 0, 1));
+                $letterKey = preg_match('/[A-Z]/', $firstChar) ? $firstChar : '#';
+                
+                if (!isset($storesByLetter[$letterKey])) {
+                    $storesByLetter[$letterKey] = [];
+                }
+                
+                $storesByLetter[$letterKey][] = $store;
+            }
+            ksort($storesByLetter);
+            
+            $coupons = Coupons::count();
+            $updatedStores = Stores::where('language_id', $language->id)
+            ->where('updated_at', '>=', now()->subYear())
+            ->count();
+            
+            return view('front-end.stores', compact('stores', 'storesByLetter', 'letter', 'totalStoresCount', 'coupons', 'updatedStores'));
+        }
 
-        // Get stores for this language
-        $stores = Stores::where('language_id', $language->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(100);
-
-        // Count total coupons
-        $coupons = Coupons::count();
-
-        // Count recently updated stores (last 24 hours)
+        $stores = $query->paginate(40);
+        $storesByLetter = null;
+        $coupons = Coupons::count(); // Keep this line
         $updatedStores = Stores::where('language_id', $language->id)
         ->where('updated_at', '>=', now()->subYear())
         ->count();
 
-
-        return view('front-end.stores', compact('stores', 'coupons', 'updatedStores'));
+        
+        return view('front-end.stores', compact('stores', 'storesByLetter', 'letter', 'coupons', 'updatedStores'));
     }
 
     public function StoreDetails($lang = 'en', $slug, Request $request)
@@ -242,7 +279,7 @@ class HomeController extends Controller
                             ->where('id', '!=', $store->id)
                             ->where('language_id', $store->language_id)
                             ->get();
-         $relatedblogs = Blog::where('category_id', $store->categories->id)
+         $relatedblogs = Blog::where('store_id', $store->id)
                             ->where('language_id', $store->language_id)
                             ->get();    
 

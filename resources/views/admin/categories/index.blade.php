@@ -153,7 +153,7 @@
                                                                onclick="return confirm('Are you sure you want to delete this category?')">
                                                                 <i class="fas fa-trash-alt"></i>
                                                             </a>
-                                                            <a href="{{ route('related_category', ['slug' => Str::slug($category->slug)]) }}"
+                                                            <a href="{{ route('category.details', ['slug' => Str::slug($category->slug)]) }}"
                                                                 target="_blank"
                                                                class="btn btn-secondary"
                                                                data-toggle="tooltip"

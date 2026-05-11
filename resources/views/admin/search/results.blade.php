@@ -245,7 +245,7 @@
                                        class="btn btn-outline-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{{ route('blog-details', ['slug' => $blog->slug]) }}" 
+                                    <a href="{{ route('blog-details', ['slug' => Str::slug($blog->slug)]) }}" 
                                        target="_blank"
                                        class="btn btn-outline-success">
                                         <i class="fas fa-eye"></i>

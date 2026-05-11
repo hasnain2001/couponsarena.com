@@ -40,6 +40,9 @@
                             <span class="badge bg-primary">
                                 <i class="fas fa-tag me-1"></i>{{ $blog->category->title ?? 'Uncategorized' }}
                             </span>
+                             <span class="badge bg-primary">
+                                <i class="fas fa-store me-1"></i>{{ $blog->store->name ?? 'no store ' }}
+                            </span>
                             @if($blog->status == 'enable')
                             <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Published</span>
                             @else

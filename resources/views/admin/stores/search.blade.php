@@ -129,12 +129,12 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <a href="{{ route('admin.store.store_details', ['slug' => Str::slug($store->slug)]) }}"
+                                                        <a href="{{ route('admin.store.store_details', ['slug' => Str::slug($store->slug)]) }}"
                                                                class="btn btn-success btn-sm"
                                                                data-toggle="tooltip"
                                                                title="Manage Coupons">
                                                                 <i class="fas fa-tags mr-1"></i> Coupons
-                                                            </a>
+                                                        </a>
                                                         </td>
                                                     </tr>
                                                 @endforeach

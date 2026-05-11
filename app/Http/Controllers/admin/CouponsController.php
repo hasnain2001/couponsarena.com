@@ -29,23 +29,62 @@ class CouponsController extends Controller
         // Handle case where coupon is not found
         return redirect()->back()->with('error', 'Coupon not found.');
     }
-     public function update_clicks(Request $request)
-    {
-        try {
-            $orderData = $request->order;
+// For updating click counts
+public function updateClicks(Request $request)
+{
+    try {
+        $couponId = $request->input('coupon_id');
+        
+        if (!$couponId) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Coupon ID is required'
+            ], 400);
+        }
+        
+        $coupon = Coupons::find($couponId);
+        
+        if ($coupon) {
+            $coupon->increment('clicks');
+            return response()->json([
+                'success' => true, 
+                'message' => 'Click count updated',
+                'new_count' => $coupon->clicks
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false, 
+            'message' => 'Coupon not found'
+        ], 404);
+        
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false, 
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
 
-            // Loop through the order data and update the order column for each coupon
-            foreach ($orderData as $order) {
-                $coupon = Coupons::find($order['id']);
+// For updating order positions (your existing function)
+public function updateOrder(Request $request)
+{
+    try {
+        $orderData = $request->order;
+        
+        foreach ($orderData as $order) {
+            $coupon = Coupons::find($order['id']);
+            if ($coupon) {
                 $coupon->order = $order['position'];
                 $coupon->save();
             }
-
-            return response()->json(['status' => 'success', 'message' => 'Update Successfully.']);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
+        
+        return response()->json(['status' => 'success', 'message' => 'Update Successfully.']);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
     }
+}
         public function updatecoupon(Request $request)
     {
         try {

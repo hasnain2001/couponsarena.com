@@ -110,7 +110,7 @@ class StoresController extends Controller
             'authentication' => $validated['authentication'] ?? 'No Auth',
             'network_id' => $validated['network_id'],
             'store_image' => $storeImage,
-            'content' => $validated['content'] ?? 'no content',
+            'content' => $validated['content'] ?? null,
             'user_id' => Auth::id(),
         ]);
 

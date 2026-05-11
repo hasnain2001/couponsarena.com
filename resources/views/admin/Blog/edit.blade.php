@@ -190,49 +190,69 @@
                             </div>
                         </div>
 
-                        <!-- Categories & Language Card -->
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-warning text-dark py-3">
-                                <h3 class="h5 mb-0"><i class="fas fa-tags me-2"></i>Categories & Language</h3>
+                    <!-- Categories & Language Card -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-warning text-dark py-3">
+                            <h3 class="h5 mb-0"><i class="fas fa-tags me-2"></i>Categories & Language</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="store_id" class="form-label fw-semibold">Store <span class="text-danger">*</span></label>
+                                <select name="store_id" id="store_id" class="form-select" required>
+                                    <option value="" disabled>-- Select Store --</option>
+                                    @foreach ($stores as $store)
+                                    <option value="{{ $store->id }}" 
+                                            data-category="{{ $store->category_id }}"
+                                            data-language="{{ $store->language_id }}"
+                                            {{ old('store_id', $blog->store_id) == $store->id ? 'selected' : '' }}>
+                                        {{ $store->slug ?? 'store name' }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @if($blog->store)
+                                <small class="form-text text-muted mt-1">
+                                    Current: <span class="badge bg-info">{{ $blog->store->name ?? 'No store' }}</span>
+                                </small>
+                                @endif
                             </div>
-                            <div class="card-body">
-                               
-                                <div class="mb-3">
-                                    <label for="lang" class="form-label fw-semibold">Language <span class="text-danger">*</span></label>
-                                    <select name="category_id" id="lang" class="form-select" required>
-                                        <option value="" disabled>-- Select Language --</option>
-                                        @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" 
-                                            {{ old('category_id', $blog->category_id) == $category->id ? 'selected' : '' }}>
-                                             {{ $category->title ?? 'category' }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                    @if($blog->language)
-                                    <small class="form-text text-muted mt-1">
-                                        Current: <span class="badge bg-info">{{ $blog->language->code }}</span>
-                                    </small>
-                                    @endif
-                                </div>
-                                <div class="mb-3">
-                                    <label for="lang" class="form-label fw-semibold">Language <span class="text-danger">*</span></label>
-                                    <select name="language_id" id="lang" class="form-select" required>
-                                        <option value="" disabled>-- Select Language --</option>
-                                        @foreach ($langs as $lang)
-                                        <option value="{{ $lang->id }}" 
-                                            {{ old('language_id', $blog->language_id) == $lang->id ? 'selected' : '' }}>
-                                            {{ $lang->code }} - {{ $lang->name ?? 'Language' }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                    @if($blog->language)
-                                    <small class="form-text text-muted mt-1">
-                                        Current: <span class="badge bg-info">{{ $blog->language->code }}</span>
-                                    </small>
-                                    @endif
-                                </div>
+                            
+                            <div class="mb-3">
+                                <label for="category_id" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
+                                <select name="category_id" id="category_id" class="form-select" required>
+                                    <option value="" disabled>-- Select Category --</option>
+                                    @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" 
+                                        {{ old('category_id', $blog->category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->title ?? 'category' }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @if($blog->category)
+                                <small class="form-text text-muted mt-1">
+                                    Current: <span class="badge bg-info">{{ $blog->category->title }}</span>
+                                </small>
+                                @endif
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="language_id" class="form-label fw-semibold">Language <span class="text-danger">*</span></label>
+                                <select name="language_id" id="language_id" class="form-select" required>
+                                    <option value="" disabled>-- Select Language --</option>
+                                    @foreach ($langs as $lang)
+                                    <option value="{{ $lang->id }}" 
+                                        {{ old('language_id', $blog->language_id) == $lang->id ? 'selected' : '' }}>
+                                        {{ $lang->code }} - {{ $lang->name ?? 'Language' }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                @if($blog->language)
+                                <small class="form-text text-muted mt-1">
+                                    Current: <span class="badge bg-info">{{ $blog->language->code }}</span>
+                                </small>
+                                @endif
                             </div>
                         </div>
+                    </div>
 
                         <!-- SEO Settings Card -->
                         <div class="card shadow-sm">
@@ -251,12 +271,6 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="meta_tag" class="form-label fw-semibold">Meta Tag</label>
-                                    <input type="text" class="form-control" name="meta_tag" id="meta_tag" 
-                                           value="{{ old('meta_tag', $blog->meta_tag) }}" placeholder="e.g., technology, blog, tips">
-                                    <small class="form-text text-muted">Separate tags with commas</small>
-                                </div>
 
                                 <div class="mb-3">
                                     <label for="meta_keyword" class="form-label fw-semibold">Meta Keyword</label>
@@ -397,54 +411,129 @@
 </style>
 @endpush
 
+
+
 @push('scripts')
 <script>
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
+        // Auto-select category and language when store is selected
+        const storeSelect = document.getElementById('store_id');
+        const categorySelect = document.getElementById('category_id');
+        const languageSelect = document.getElementById('language_id');
+        
+        // Store original values before any changes
+        const originalCategoryValue = categorySelect.value;
+        const originalLanguageValue = languageSelect.value;
+        
+        if (storeSelect) {
+            storeSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const categoryId = selectedOption.getAttribute('data-category');
+                const languageId = selectedOption.getAttribute('data-language');
+
+                // Auto-select category if data-category exists
+                if (categoryId && categoryId !== '') {
+                    // Check if the category option exists
+                    const categoryOption = categorySelect.querySelector(`option[value="${categoryId}"]`);
+                    if (categoryOption) {
+                        categorySelect.value = categoryId;
+                        showStoreRelationMessage('Category auto-selected based on store', 'success');
+                    } else {
+                        // If category doesn't exist in the dropdown, keep original or reset
+                        if (originalCategoryValue) {
+                            categorySelect.value = originalCategoryValue;
+                        }
+                        showStoreRelationMessage('Selected store\'s category not available in list', 'warning');
+                    }
+                } else {
+                    // If no category data, optionally reset to original or keep as is
+                    if (originalCategoryValue) {
+                        categorySelect.value = originalCategoryValue;
+                    }
+                }
+
+                // Auto-select language if data-language exists
+                if (languageId && languageId !== '') {
+                    // Check if the language option exists
+                    const languageOption = languageSelect.querySelector(`option[value="${languageId}"]`);
+                    if (languageOption) {
+                        languageSelect.value = languageId;
+                        showStoreRelationMessage('Language auto-selected based on store', 'success');
+                    } else {
+                        // If language doesn't exist in the dropdown, keep original or reset
+                        if (originalLanguageValue) {
+                            languageSelect.value = originalLanguageValue;
+                        }
+                        showStoreRelationMessage('Selected store\'s language not available in list', 'warning');
+                    }
+                } else {
+                    // If no language data, optionally reset to original or keep as is
+                    if (originalLanguageValue) {
+                        languageSelect.value = originalLanguageValue;
+                    }
+                }
+            });
+
+            // Initial trigger if there's a store selected (for edit page)
+            if (storeSelect.value) {
+                // Small timeout to ensure DOM is fully ready
+                setTimeout(() => {
+                    storeSelect.dispatchEvent(new Event('change'));
+                }, 100);
+            }
+        }
+
         // CKEditor is already initialized in main layout
         
         // Update file input to show selected file name
         const blogImageInput = document.getElementById('blog_image');
         const imagePreview = document.getElementById('imagePreview');
         
-        // Initialize image preview functionality
-        blogImageInput.addEventListener('change', function() {
-            previewImage(this);
-        });
+        if (blogImageInput) {
+            // Initialize image preview functionality
+            blogImageInput.addEventListener('change', function() {
+                previewImage(this);
+            });
+        }
         
         // Auto-generate slug from title
         const titleInput = document.getElementById('title');
         const slugInput = document.getElementById('slug');
         
-        titleInput.addEventListener('input', function() {
-            const value = this.value;
-            // Convert to slug format
-            const slugValue = value
-                .toLowerCase()
-                .replace(/[^a-z0-9\s-]/g, '')
-                .replace(/\s+/g, ' ')
-                .trim()
-                .replace(/\s/g, ' ');
+        if (titleInput && slugInput) {
+            titleInput.addEventListener('input', function() {
+                const value = this.value;
+                // Convert to slug format
+                const slugValue = value
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .replace(/\s/g, ' ');
+                
+                slugInput.value = slugValue;
+                
+                // Check slug existence
+                if(slugValue) {
+                    checkSlugExistence(slugValue);
+                }
+            });
             
-            slugInput.value = slugValue;
-            
-            // Check slug existence
-            if(slugValue) {
-                checkSlugExistence(slugValue);
-            }
-        });
-        
-        // Check slug existence on manual input
-        slugInput.addEventListener('keyup', function() {
-            const slug = this.value;
-            
-            if (slug) {
-                checkSlugExistence(slug);
-            } else {
-                const slugMessage = document.getElementById('slug-message');
-                slugMessage.innerHTML = '<span class="text-muted">Please enter a slug</span>';
-            }
-        });
+            // Check slug existence on manual input
+            slugInput.addEventListener('keyup', function() {
+                const slug = this.value;
+                
+                if (slug) {
+                    checkSlugExistence(slug);
+                } else {
+                    const slugMessage = document.getElementById('slug-message');
+                    if (slugMessage) {
+                        slugMessage.innerHTML = '<span class="text-muted">Please enter a slug</span>';
+                    }
+                }
+            });
+        }
         
         // Save as draft button
         const saveDraftBtn = document.getElementById('saveDraftBtn');
@@ -458,15 +547,56 @@
                 
                 // Add to form and submit
                 const form = document.getElementById('blogForm');
-                form.appendChild(draftInput);
-                form.submit();
+                if (form) {
+                    form.appendChild(draftInput);
+                    form.submit();
+                }
             });
         }
+        
+        // Initialize meta field counters
+        initMetaFieldCounters();
     });
+    
+    // Function to show store relation messages
+    function showStoreRelationMessage(message, type = 'info') {
+        // You can customize this to show a toast, alert, or console log
+        console.log(`[${type.toUpperCase()}] ${message}`);
+        
+        // Optional: Create a small notification banner
+        const notificationContainer = document.getElementById('notification-container');
+        if (!notificationContainer) {
+            // Create container if it doesn't exist
+            const container = document.createElement('div');
+            container.id = 'notification-container';
+            container.style.position = 'fixed';
+            container.style.top = '20px';
+            container.style.right = '20px';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+        }
+        
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show`;
+        notification.role = 'alert';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        document.getElementById('notification-container').appendChild(notification);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
     
     // Function to check slug existence
     function checkSlugExistence(slug) {
         const slugMessage = document.getElementById('slug-message');
+        
+        if (!slugMessage) return;
         
         // Show loading state
         slugMessage.innerHTML = '<span class="text-info"><i class="fas fa-spinner fa-spin me-1"></i> Checking slug availability...</span>';
@@ -497,6 +627,8 @@
     // Function to preview selected image
     function previewImage(input) {
         const preview = document.getElementById('imagePreview');
+        
+        if (!preview) return;
         
         if (input.files && input.files[0]) {
             const reader = new FileReader();
@@ -537,7 +669,7 @@
         }
     }
     
-    // Character counter for meta fields (optional enhancement)
+    // Character counter for meta fields
     function initMetaFieldCounters() {
         const metaTitle = document.getElementById('meta_title');
         const metaDesc = document.getElementById('meta_description');
@@ -546,12 +678,18 @@
             metaTitle.addEventListener('input', function() {
                 updateCharCounter(this, 'metaTitleCounter');
             });
+            
+            // Initial counter update
+            updateCharCounter(metaTitle, 'metaTitleCounter');
         }
         
         if(metaDesc) {
             metaDesc.addEventListener('input', function() {
                 updateCharCounter(this, 'metaDescCounter');
             });
+            
+            // Initial counter update
+            updateCharCounter(metaDesc, 'metaDescCounter');
         }
     }
     
@@ -585,10 +723,5 @@
             }
         }
     }
-    
-    // Initialize when DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        initMetaFieldCounters();
-    });
 </script>
 @endpush

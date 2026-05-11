@@ -31,9 +31,16 @@
                         <a href="/" class="text-decoration-none text-white">Home</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{{ route('category.details', ['slug' => Str::slug($blog->category->slug)]) }}" class="text-decoration-none text-white">
-                            {{ $blog->category->title }}
-                        </a>
+                       @if (optional($blog->category)->slug)
+                            <a href="{{ route('category.details', ['slug' => Str::slug($blog->category->slug)]) }}" class="text-decoration-none text-white">
+                                {{ $blog->category->title }}
+                            </a>
+                        @else
+                            <a href="{{ url(app()->getLocale() . '/blog') }}" class="text-decoration-none text-white">
+                                Uncategorized
+                            </a>
+                        @endif
+                       
                     </li>
                     <li class="breadcrumb-item">
                         <a href="{{ url(app()->getLocale() . '/blog') }}" class="text-decoration-none text-white">Blog</a>
@@ -112,7 +119,7 @@
                 <aside class="sidebar sticky-top" style="top: 20px;">
                     {{-- <div class="card border-0 shadow-sm rounded-lg overflow-hidden">
                         <div class="card-header bg-dark text-white py-3">
-                            <h5 class="mb-0"><i class="fas fa-store me-2"></i>Latest Stores</h5>
+                            <h5 class="mb-0"><i class="fas fa-store me-2"></i> Brand</h5>
                         </div>
                         <div class="card-body p-3">
                             <div class="row g-3">
@@ -154,7 +161,7 @@
                         </div>
                         <div class="card-body">
                             <div class="list-group list-group-flush">
-                                @foreach($recentPosts ?? [] as $recent)
+                                @foreach($relatedblogs  as $recent)
                                 <a href="{{ route('blog-details', ['slug' => Str::slug($recent->slug)]) }}"
                                    class="list-group-item list-group-item-action border-0 py-3">
                                     <h6 class="mb-1">{{ Str::limit($recent->title, 50) }}</h6>
@@ -313,7 +320,7 @@
 .store-img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.3s ease;
 }
 

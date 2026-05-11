@@ -316,6 +316,9 @@
     </section>
 </div>
 
+@endsection
+@push('scripts')
+    
 <script>
     // Toggle coupon code input visibility
     function toggleCodeInput(checkboxElement) {
@@ -358,4 +361,4 @@
         }
     });
 </script>
-@endsection
+@endpush

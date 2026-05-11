@@ -40,6 +40,7 @@ use App\Http\Controllers\HomeController;
 
     Route::put('/updateCoupon/{id}', [CouponsController::class, 'updatecoupon'])->name('updateCoupon');
     Route::post('/update-clicks', [CouponsController::class, 'updateClicks'])->name('update.clicks');
+    Route::post('/update-order', [CouponsController::class, 'updateOrder'])->name('update.order');
     Route::get('/clicks/{couponId}', [CouponsController::class, 'openCoupon'])->name('open.coupon');
     Route::post('/coupons', [CouponsController::class, ''])->name('coupons.updateRanking');
 

@@ -14,6 +14,9 @@ return [
     'brands' =>'brands',
     'coupons' =>'coupons',
     'trending-posts' => 'Trending Posts',
+    'stores' => 'Stores',
+    'categories' => 'Categories',
+    'blog' => 'Blog',
 
     //for footer/
     'Subscribe to our Newsletter' => 'Subscribe to our Newsletter',

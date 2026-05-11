@@ -146,15 +146,30 @@
                         <!-- Categories & Language Card -->
                         <div class="card shadow-sm mb-4">
                             <div class="card-header bg-warning text-dark py-3">
-                                <h3 class="h5 mb-0"><i class="fas fa-tags me-2"></i>Categories & Language</h3>
+                                <h3 class="h5 mb-0"><i class="fas fa-tags me-2"></i>store & Categories & Language</h3>
                             </div>
                             <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="store_id" class="form-label fw-semibold">Store <span class="text-danger">*</span></label>
+                                    <select name="store_id" id="store_id" class="form-select" required>
+                                        <option value="" disabled {{ old('store_id') ? '' : 'selected' }}>-- Select Store --</option>
+                                        @foreach ($stores as $store)
+                                        <option value="{{ $store->id }}" 
+                                                data-language="{{ $store->language_id }}"
+                                                data-category="{{ $store->category_id }}"
+                                                {{ old('store_id') == $store->id ? 'selected' : '' }}>
+                                            {{ $store->slug ?? 'store' }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div> 
+                                
                                 <div class="mb-3">
                                     <label for="category_id" class="form-label fw-semibold">Category <span class="text-danger">*</span></label>
                                     <select class="form-select" name="category_id" id="category_id" required>
                                         <option value="">Select Category</option>
                                         @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" {{ old('category') == $category->id ? 'selected' : '' }}>
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                                             {{ $category->slug }}
                                         </option>
                                         @endforeach
@@ -188,12 +203,6 @@
                                     <small class="form-text text-muted">Recommended: 50-60 characters</small>
                                 </div>
 
-                                <div class="mb-3">
-                                    <label for="meta_tag" class="form-label fw-semibold">Meta Tag</label>
-                                    <input type="text" class="form-control" name="meta_tag" id="meta_tag" 
-                                           value="{{ old('meta_tag') }}" placeholder="e.g., technology, blog, tips">
-                                    <small class="form-text text-muted">Separate tags with commas</small>
-                                </div>
 
                                 <div class="mb-3">
                                     <label for="meta_keyword" class="form-label fw-semibold">Meta Keyword</label>
@@ -288,6 +297,53 @@
 
 @push('scripts')
 <script>
+      // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Automatically select category and language when store is selected
+        const storeSelect = document.getElementById('store_id');
+        
+        if (storeSelect) {
+            storeSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const categoryId = selectedOption.getAttribute('data-category');
+                const languageId = selectedOption.getAttribute('data-language');
+
+                // Auto-select category if data-category exists
+                if (categoryId) {
+                    const categorySelect = document.getElementById('category_id');
+                    if (categorySelect) {
+                        categorySelect.value = categoryId;
+                    }
+                }
+
+                // Auto-select language if data-language exists
+                if (languageId) {
+                    const languageSelect = document.getElementById('language_id');
+                    if (languageSelect) {
+                        languageSelect.value = languageId;
+                    }
+                }
+            });
+
+            // If there's a store selected, trigger the change event to set category and language
+            if (storeSelect.value) {
+                storeSelect.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // If you have a toggle code checkbox functionality
+        const toggleCodeCheckbox = document.getElementById('toggleCodeCheckbox');
+        if (toggleCodeCheckbox) {
+            // If there's an old code value, show the code input
+            if ("{{ old('code') }}") {
+                toggleCodeCheckbox.checked = true;
+                const codeInputGroup = document.getElementById('codeInputGroup');
+                if (codeInputGroup) {
+                    codeInputGroup.style.display = 'block';
+                }
+            }
+        }
+    });
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', function() {
         // CKEditor is already initialized in main layout

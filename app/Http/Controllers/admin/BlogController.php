@@ -33,22 +33,24 @@ class BlogController extends Controller
     {
      $langs = Language::all();
      $categories = Categories::all();
-      return view('admin.blog.create', compact('langs', 'categories'));
+     $stores = Stores::orderByDesc('created_at')->get();
+      return view('admin.blog.create', compact('langs', 'categories','stores'));
     }
     public function store(Request $request)
     {
         // Validate request data
         $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string',
             'slug' => 'required|string|max:255|unique:blogs,slug',
             'content' => 'required|string',
             'category_image' => 'required|image|mimes:jpeg,png,jpg,gif',
-            'meta_title' => 'nullable|string|max:65',
-            'meta_description' => 'nullable|string|max:155',
-            'meta_keyword' => 'nullable|string|max:255',
+            'meta_title' => 'nullable|string',
+            'meta_description' => 'nullable|string',
+            'meta_keyword' => 'nullable|string',
             'top' => 'nullable|integer',
             'category_id' => 'nullable|integer',
             'language_id' =>'required|integer',
+            'store_id' =>'required|integer',
             'status' => 'nullable|string|in:enable,disabled',
         ]);
 
@@ -85,6 +87,7 @@ class BlogController extends Controller
         $blog->meta_keyword = $request->input('meta_keyword');
         $blog->top = $request->input('top');
         $blog->category_id = $request->input('category_id');
+        $blog->store_id = $request->input('store_id');
         $blog->status = $request->input('status');
         $content = $request->input('content');
 
@@ -128,9 +131,10 @@ class BlogController extends Controller
     public function edit($id)
     {
         $blog = Blog::with('language', 'category')->findOrFail($id);
-        $langs = Language::all();
-        $categories = Categories::all();
-        return view('admin.blog.edit', compact('blog', 'langs', 'categories'));
+        $langs = Language::orderByDesc('created_at')->get();
+        $categories = Categories::orderByDesc('created_at')->get();
+        $stores = Stores::orderByDesc('created_at')->get();
+        return view('admin.blog.edit', compact('blog', 'langs', 'categories','stores'));
     }
     public function update(Request $request, $id)
     {
@@ -141,11 +145,12 @@ class BlogController extends Controller
             'language_id' =>'nullable|integer',
             'content' => 'required|string',
             'category_image' => 'image|mimes:jpeg,png,jpg,gif',
-            'meta_title' => 'nullable|string|max:165',
-            'meta_description' => 'nullable|string|max:155',
-            'meta_keyword' => 'nullable|string|max:255',
+            'meta_title' => 'nullable|string',
+            'meta_description' => 'nullable|string',
+            'meta_keyword' => 'nullable|string',
             'top' => 'nullable|integer',
             'category_id' => 'nullable|integer',
+            'store_id' =>'nullable|integer',
             'status' => 'nullable|string|in:enable,disabled',
         ]);
 
@@ -199,6 +204,7 @@ class BlogController extends Controller
         $blog->meta_keyword = $request->input('meta_keyword');
         $blog->top = $request->input('top');
         $blog->category_id = $request->input('category_id', $blog->category_id);
+        $blog->store_id = $request->input('store_id', $blog->store_id);
         $blog->status = $request->input('status', $blog->status);
 
 

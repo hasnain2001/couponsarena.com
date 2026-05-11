@@ -20,6 +20,7 @@ class Blog extends Model
         'top',
         'category_id',
         'language_id',
+        'store_id',
         'status',
     ];
 
@@ -30,5 +31,9 @@ class Blog extends Model
     public function category()
     {
         return $this->belongsTo(Categories::class, 'category_id');
+    }
+     public function store()
+    {
+        return $this->belongsTo(Stores::class, 'store_id');
     }
 }

@@ -10,7 +10,7 @@
 @if ($store->meta_description)
 {{ $store->meta_description }}
 @else
-Save big at {{ $store->name }} with verified coupons, promo codes & exclusive discounts from {{config('app.name')}}.
+Save big at {{ $store->name }} with verified coupons, promo codes & exclusive discounts from {{ config('app.name')}}.
 @endif
 @endsection
 @section('keywords')
@@ -69,7 +69,7 @@ Save big at {{ $store->name }} with verified coupons, promo codes & exclusive di
                         @endif
                         <div class="flex-grow-1">
                             <h1 class="store-title mb-1">{{ $store->name }}</h1>
-                            <p class="store-description mb-0 text-muted small">{!! Str::limit(strip_tags($store->description), 100) !!}</p>
+                            <p class="store-description mb-0 text-muted small">{{ $store->description }}</p>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@ Save big at {{ $store->name }} with verified coupons, promo codes & exclusive di
                                 <!-- Store Logo -->
                                 <div class="text-center mb-2">
                                     @if ($store->store_image)
-                                        <img src="{{ asset('uploads/stores/' . $store->store_image) }}" class="coupon-store-img" alt="{{ $store->name }}" loading="lazy" decoding="async" / >
+                                        <img src="{{ asset('uploads/stores/' . $store->store_image) }}" class="coupon-store-img" alt="{{ $store->name }}" loading="lazy" decoding="async"/>
                                     @endif
                                 </div>
 
@@ -96,8 +96,8 @@ Save big at {{ $store->name }} with verified coupons, promo codes & exclusive di
                                 <div class="coupon-action mt-auto">
                                     @if ($coupon->code)
                                         <button class="btn btn-primary btn-sm w-100 reveal-btn"
-                                                onclick="handleRevealCode('{{ $coupon->id }}', '{{ $coupon->stores->affiliate_url ?? $coupon->destination_url }}')"
-                                                id="getCode{{ $coupon->id }}">
+                                            onclick="handleRevealCode('{{ $coupon->id }}', '{{ addslashes($coupon->stores->affiliate_url ?? $coupon->destination_url) }}')"
+                                            id="getCode{{ $coupon->id }}">
                                             <i class="fas fa-eye me-1"></i>Reveal Code
                                         </button>
 
@@ -118,12 +118,12 @@ Save big at {{ $store->name }} with verified coupons, promo codes & exclusive di
                                         </div>
                                     @else
                                         <a href="{{ $coupon->stores->affiliate_url ?? $coupon->destination_url }}"
-                                           onclick="updateClickCount('{{ $coupon->id }}')"
-                                           class="btn btn-success btn-sm w-100 "
-                                           rel="nofollow"
-                                           target="_blank">
-                                            <i class="fas fa-shopping-bag me-1"></i>Get Deal
-                                        </a>
+                                            onclick="handleGetDeal('{{ $coupon->id }}', '{{ addslashes($coupon->stores->affiliate_url ?? $coupon->destination_url) }}'); return false;"
+                                            class="btn btn-success btn-sm w-100"
+                                            rel="nofollow"
+                                            target="_blank">
+                                                <i class="fas fa-shopping-bag me-1"></i>Get Deal
+                                            </a>
                                     @endif
                                 </div>
 
@@ -145,15 +145,45 @@ Save big at {{ $store->name }} with verified coupons, promo codes & exclusive di
                 @endforeach
             </div>
 
-            <!-- Store Content Section -->
-            @if ($store->content)
-                <div class="card shadow-sm mt-4">
-                    <div class="card-body">
-                        <h5 class="card-title">About {{ $store->name }}</h5>
-                        <div class="store-content">{!! $store->content !!}</div>
+
+<!-- Store Content / Blog Section -->
+                    @if ($store->content || $relatedblogs->isNotEmpty())
+                    <div class="content-section mt-5">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                @if ($store->content)
+                                <div class="blog-content">
+                                    {!! $store->content !!}
+                                </div>
+                                @else
+                                <div class="related-blogs">
+                                    <h3 class="section-title mb-4">related articles</h3>
+                                    @foreach ($relatedblogs as $blog)
+                                    <div class="blog-item mb-4 pb-4 border-bottom">
+                                        <h4 class="blog-title h5 mb-3">{{ $blog->title }}</h4>
+                                        @if($blog->category_image)
+                                        <img class="blog-image img-fluid rounded mb-3"
+                                            src="{{ asset($blog->category_image) }}"
+                                            alt="{{ $blog->title }}"
+                                            loading="lazy"
+                                            style="max-height: 200px; object-fit: cover;">
+                                        @endif
+                                        <div class="blog-content small">
+                                            {!! $blog->content !!}
+                                        </div>
+                                        <a href="{{ route('blog-details', ['slug' => Str::slug($blog->slug)]) }}" class="btn btn-link text-primary p-0 mt-2 small">
+                                            read more <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                </div>
-            @endif
+                    @endif
+
+
         </div>
 
         <!-- Sidebar -->
@@ -260,20 +290,21 @@ Save big at {{ $store->name }} with verified coupons, promo codes & exclusive di
 @push('scripts')
 <script>
     // Handle reveal code functionality
-    function handleRevealCode(couponId, destinationUrl, affiliateUrl) {
+    function handleRevealCode(couponId, destinationUrl) {
         const getCodeBtn = document.getElementById(`getCode${couponId}`);
         const codeContainer = document.getElementById(`codeContainer${couponId}`);
 
         // Hide reveal button and show code
-        getCodeBtn.classList.add('d-none');
-        codeContainer.classList.remove('d-none');
-
-        // Open store URL in new tab
-        if (destinationUrl) {
-            window.open(destinationUrl, '_blank');
+        if (getCodeBtn) {
+            getCodeBtn.classList.add('d-none');
         }
-        if (affiliateUrl) {
-            window.open(affiliateUrl, '_blank');
+        if (codeContainer) {
+            codeContainer.classList.remove('d-none');
+        }
+
+        // Open store URL in new tab if it exists and is valid
+        if (destinationUrl && destinationUrl !== 'null' && destinationUrl !== 'undefined') {
+            window.open(destinationUrl, '_blank');
         }
 
         // Update click count
@@ -283,45 +314,72 @@ Save big at {{ $store->name }} with verified coupons, promo codes & exclusive di
     // Copy coupon code to clipboard
     function copyCouponCode(couponId) {
         const codeElement = document.getElementById(`codeIndex${couponId}`);
+        if (!codeElement) return;
+        
         const code = codeElement.value;
         const confirmation = document.getElementById(`copyConfirmation${couponId}`);
 
         navigator.clipboard.writeText(code)
             .then(() => {
-                confirmation.classList.remove('d-none');
-                setTimeout(() => {
-                    confirmation.classList.add('d-none');
-                }, 2000);
+                if (confirmation) {
+                    confirmation.classList.remove('d-none');
+                    setTimeout(() => {
+                        confirmation.classList.add('d-none');
+                    }, 2000);
+                }
             })
             .catch(err => {
                 console.error('Failed to copy:', err);
                 // Fallback for older browsers
                 codeElement.select();
                 document.execCommand('copy');
-                confirmation.classList.remove('d-none');
-                setTimeout(() => {
-                    confirmation.classList.add('d-none');
-                }, 2000);
+                if (confirmation) {
+                    confirmation.classList.remove('d-none');
+                    setTimeout(() => {
+                        confirmation.classList.add('d-none');
+                    }, 2000);
+                }
             });
     }
 
     // Update click count via AJAX
     function updateClickCount(couponId) {
+        console.log('Updating click count for coupon:', couponId); // Debug log
+        
         fetch('{{ route("update.clicks") }}', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: `coupon_id=${couponId}`
+            body: JSON.stringify({
+                coupon_id: couponId
+            })
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Click count updated');
+            console.log('Click count updated successfully:', data);
+            // Optional: Update the click count display on the page
+            const clickCountElement = document.querySelector(`#coupon-${couponId}-clicks`);
+            if (clickCountElement && data.new_count) {
+                clickCountElement.textContent = data.new_count;
+            }
         })
         .catch(error => {
             console.error('Error updating click count:', error);
         });
+    }
+
+    // Also handle Get Deal button clicks
+    function handleGetDeal(couponId, destinationUrl) {
+        updateClickCount(couponId);
+        if (destinationUrl && destinationUrl !== 'null' && destinationUrl !== 'undefined') {
+            setTimeout(() => {
+                window.open(destinationUrl, '_blank');
+            }, 100);
+        }
+        return true;
     }
 
     // Mobile-specific optimizations
@@ -333,5 +391,35 @@ Save big at {{ $store->name }} with verified coupons, promo codes & exclusive di
             });
         }
     });
+    function updateClickCount(couponId) {
+    console.log('Updating click count for coupon:', couponId);
+    
+    fetch('{{ route("update.clicks") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            coupon_id: couponId
+        })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            console.log('Click count updated successfully');
+        } else {
+            console.error('Error:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+    });
+}
 </script>
 @endpush
